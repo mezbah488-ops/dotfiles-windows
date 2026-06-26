@@ -14,15 +14,8 @@ function Save-Git {
 
 Set-Alias save Save-Git
 
-function savedots { 
-    $prev = Get-Location
-    Set-Location C:\Users\Mezbah\dotfiles-windows
-    save $args[0]
-    Set-Location $prev
-}
 
-
-#Import-Module z
+Import-Module z
 
 Import-Module PSReadLine
 # This enables the gray "ghost" text for history suggestions
@@ -30,4 +23,4 @@ Set-PSReadLineOption -PredictionSource History
 # This lets you use Ctrl+F to accept suggestions
 Set-PSReadLineKeyHandler -Key Alt+f -Function ForwardWord
 
-Set-PSReadLineKeyHandler -Key F2 -Function SwitchPredictionView
+#Set-PSReadLineKeyHandler -Key F2 -Function SwitchPredictionView
