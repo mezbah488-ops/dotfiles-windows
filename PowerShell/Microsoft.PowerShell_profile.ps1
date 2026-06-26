@@ -14,7 +14,12 @@ function Save-Git {
 
 Set-Alias save Save-Git
 
-
+function savedots { 
+    $prev = Get-Location
+    Set-Location C:\Users\Mezbah\dotfiles-windows
+    save $args[0]
+    Set-Location $prev
+}
 
 
 #Import-Module z
