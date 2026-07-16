@@ -1,4 +1,5 @@
 [general]
+working_directory = "C:\\Users\\Mezbah"
 
 [env]
 TERM = "xterm-256color"

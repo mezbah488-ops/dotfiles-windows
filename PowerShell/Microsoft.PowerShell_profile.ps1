@@ -51,9 +51,7 @@ function prompt {
 
         Write-Host ")" -NoNewline -ForegroundColor DarkGray
     }
-
-    Write-Host ""
-    return "> "
+    return " "
 }
 
 #
