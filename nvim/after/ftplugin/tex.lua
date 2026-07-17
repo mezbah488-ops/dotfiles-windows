@@ -36,7 +36,7 @@ vim.api.nvim_create_autocmd('FileType', {
 -- vim.opt_local.spelllang = 'en_us'
 --
 --conceallevel
--- vim.opt_local.conceallevel = 2
+vim.opt_local.conceallevel = 2
 --vim.opt_local.concealcursor = 'nc' -- conceal even when cursor is on the line, in normal/command mode
 --
 -- after/ftplugin/tex.lua

@@ -890,7 +890,7 @@ require('lazy').setup({
 
   { -- Autocompletion
     'saghen/blink.cmp',
-    event = 'VimEnter',
+    event = 'InsertEnter', -- CHANGED from 'VimEnter': defer loading until you actually type
     version = '1.*',
     dependencies = {
       -- Snippet Engine
@@ -912,12 +912,8 @@ require('lazy').setup({
           --    https://github.com/rafamadriz/friendly-snippets
           {
             'rafamadriz/friendly-snippets',
-            config = function()
-              require('luasnip.loaders.from_vscode').lazy_load()
-              require('luasnip.loaders.from_vscode').load {
-                paths = { vim.fn.stdpath 'config' .. '/snippets' },
-              }
-            end,
+            -- config function removed: was duplicating the lazy_load() call
+            -- below in LuaSnip's own config, causing it to run twice.
           },
         },
         --  opts = {
@@ -931,6 +927,9 @@ require('lazy').setup({
         config = function()
           local ls = require 'luasnip'
           require('luasnip.loaders.from_vscode').lazy_load()
+          require('luasnip.loaders.from_vscode').load {
+            paths = { vim.fn.stdpath 'config' .. '/snippets' },
+          }
           ls.filetype_extend('markdown', { 'tex', 'latex' })
           -- Enable autosnippets
           ls.config.set_config {
@@ -1120,6 +1119,7 @@ require('lazy').setup({
   --require 'kickstart.plugins.auto-session',
   require 'kickstart.plugins.conform', -- used for formatting
   require 'kickstart.plugins.nvim-ufo', -- computes folds asynchronously
+  require 'kickstart.plugins.auto-session',
   --require 'kickstart.plugins.mysite',
   --require 'kickstart.plugins.nvim-surround',
   --require 'kickstart.plugins.true-zen',
