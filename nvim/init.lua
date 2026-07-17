@@ -1,7 +1,3 @@
--- =========================init
--- Clipboard setup for Neovim
--- =========================
-
 -- Use system clipboard for all yank, delete, change, and put operations
 -- Replace your current line 6 with this:
 pcall(vim.fn.serverstart, '\\\\.\\pipe\\nvim-latex')
@@ -1121,7 +1117,7 @@ require('lazy').setup({
   --
   require 'kickstart.plugins.bufferline',
   --require 'kickstart.plugins.alpha', -- for nice startup
-  require 'kickstart.plugins.auto-session',
+  --require 'kickstart.plugins.auto-session',
   require 'kickstart.plugins.conform', -- used for formatting
   require 'kickstart.plugins.nvim-ufo', -- computes folds asynchronously
   --require 'kickstart.plugins.mysite',

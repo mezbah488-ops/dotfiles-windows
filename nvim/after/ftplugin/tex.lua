@@ -105,3 +105,87 @@ local function luasnip_picker()
 end
 
 vim.keymap.set('n', '<leader>cs', luasnip_picker, { buffer = true, desc = 'List LuaSnip triggers' })
+
+-- Setting up latex pdf viewer:
+
+-- Resolve SumatraPDF without relying on PATH
+local function find_sumatra()
+  local candidates = {
+    os.getenv 'LOCALAPPDATA' .. '/SumatraPDF/SumatraPDF.exe',
+    'C:/Program Files/SumatraPDF/SumatraPDF.exe',
+    'C:/Program Files (x86)/SumatraPDF/SumatraPDF.exe',
+  }
+  for _, path in ipairs(candidates) do
+    if vim.fn.filereadable(path) == 1 then
+      return path
+    end
+  end
+  return nil
+end
+
+local sumatra_path = find_sumatra()
+
+-- Resolve the root .tex file for a project:
+-- 1. magic comment `% !TEX root = ...` in the first 20 lines
+-- 2. main.tex in the cwd
+-- 3. fall back to the current buffer (single-file case)
+local function find_root_file()
+  local lines = vim.api.nvim_buf_get_lines(0, 0, 20, false)
+  for _, line in ipairs(lines) do
+    local root = line:match '^%%%s*!TEX%s+root%s*=%s*(.+)%s*$'
+    if root then
+      root = root:gsub('%s+$', '')
+      if root:match '^%a:[/\\]' or root:match '^/' then
+        return root
+      end
+      return vim.fn.expand '%:p:h' .. '/' .. root
+    end
+  end
+
+  local cwd_main = vim.fn.getcwd() .. '/main.tex'
+  if vim.fn.filereadable(cwd_main) == 1 then
+    return cwd_main
+  end
+
+  return vim.fn.expand '%:p'
+end
+
+-- Inverse search: tell SumatraPDF where to send double-click jumps
+local servername = vim.v.servername
+if servername and servername ~= '' then
+  local tempfile = os.getenv 'TEMP' .. '\\vimtexserver.txt'
+  local ok, err = pcall(function()
+    local f = io.open(tempfile, 'w')
+    if f then
+      f:write(servername)
+      f:close()
+    else
+      print('Failed to open ' .. tempfile)
+    end
+  end)
+  if not ok then
+    print('Error writing servername: ' .. err)
+  end
+end
+
+-- Manual forward search (root-aware, PATH-independent Sumatra lookup)
+vim.keymap.set('n', '<leader>fs', function()
+  if not sumatra_path then
+    vim.notify('SumatraPDF.exe not found in known install locations', vim.log.levels.ERROR)
+    return
+  end
+
+  local root_tex = find_root_file()
+  local root_pdf = root_tex:gsub('%.tex$', '.pdf')
+  local current_file = vim.fn.expand '%:p'
+  local line = vim.fn.line '.'
+
+  vim.system {
+    sumatra_path,
+    '-reuse-instance',
+    '-forward-search',
+    current_file,
+    tostring(line),
+    root_pdf,
+  }
+end, { buffer = true, desc = 'Forward search to PDF' })
