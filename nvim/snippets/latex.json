@@ -1,8 +1,9 @@
 {
-	"Preamble": {
+    "Preamble": {
     "prefix": "preamble",
     "body": [
       "\\documentclass[11pt,a4paper]{article}",
+      "\\usepackage{mlmodern}",
       "",
       "% --- Page layout ---",
       "\\usepackage[margin=1in]{geometry}",
@@ -46,7 +47,7 @@
       "",
       "% --- Bibliography ---",
       "\\usepackage[backend=biber, style=numeric, sorting=nyt]{biblatex}",
-      "\\addbibresource{${4:references.bib}}",
+      "% \\addbibresource{${4:references.bib}}",
       "",
       "% --- Misc ---",
       "\\usepackage{soul}",
@@ -63,12 +64,12 @@
       "\\newpage",
       "$0",
       "",
-      "\\printbibliography",
+      "% \\printbibliography",
       "\\end{document}"
     ],
     "description": "Full LaTeX preamble"
   },
-  "mdframed": {
+	  "mdframed": {
     "prefix": "mdframe",
     "body": [
       "\\begin{mdframed}",

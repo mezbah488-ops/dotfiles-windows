@@ -159,7 +159,7 @@ vim.o.mouse = 'a'
 vim.o.showmode = false
 
 vim.o.wrap = true
-vim.o.linebreak = true
+vim.o.linebreak = false
 -- Sync clipboard between OS and Neovim.
 --  Schedule the setting after `UiEnter` because it can increase startup-time.
 --  Remove this option if you want your OS clipboard to remain independent.
@@ -218,7 +218,7 @@ vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 vim.o.inccommand = 'split'
 
 -- Show which line your cursor is on
-vim.o.cursorline = true
+vim.o.cursorline = false
 
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.o.scrolloff = 0
@@ -890,47 +890,40 @@ require('lazy').setup({
 
   { -- Autocompletion
     'saghen/blink.cmp',
-    event = 'InsertEnter', -- CHANGED from 'VimEnter': defer loading until you actually type
+    event = 'InsertEnter',
     version = '1.*',
+
     dependencies = {
       -- Snippet Engine
       {
         'L3MON4D3/LuaSnip',
         version = '2.*',
+
         build = (function()
-          -- Build Step is needed for regex support in snippets.
-          -- This step is not supported in many windows environments.
-          -- Remove the below condition to re-enable on windows.
           if vim.fn.has 'win32' == 1 or vim.fn.executable 'make' == 0 then
             return
           end
           return 'make install_jsregexp'
         end)(),
+
         dependencies = {
-          --   `friendly-snippets` contains a variety of premade snippets.
-          --    See the README about individual language/framework/plugin snippets:
-          --    https://github.com/rafamadriz/friendly-snippets
           {
             'rafamadriz/friendly-snippets',
-            -- config function removed: was duplicating the lazy_load() call
-            -- below in LuaSnip's own config, causing it to run twice.
           },
         },
-        --  opts = {
-        --  snippets = { preset = 'luasnip' },
 
-        -- sources = {
-        --  default = { 'lsp', 'path', 'snippets', 'buffer' },
-        -- },
-        --},
-        -- The following I am adding to extend the latex snippets to markdown as well:
         config = function()
           local ls = require 'luasnip'
+
           require('luasnip.loaders.from_vscode').lazy_load()
+
           require('luasnip.loaders.from_vscode').load {
             paths = { vim.fn.stdpath 'config' .. '/snippets' },
           }
+
+          -- Extend LaTeX snippets to Markdown
           ls.filetype_extend('markdown', { 'tex', 'latex' })
+
           -- Enable autosnippets
           ls.config.set_config {
             enable_autosnippets = true,
@@ -943,74 +936,72 @@ require('lazy').setup({
           }
         end,
       },
+
       'folke/lazydev.nvim',
     },
+
     --- @module 'blink.cmp'
     --- @type blink.cmp.Config
     opts = {
       keymap = {
-        -- 'default' (recommended) for mappings similar to built-in completions
-        --   <c-y> to accept ([y]es) the completion.
-        --    This will auto-import if your LSP supports it.
-        --    This will expand snippets if the LSP sent a snippet.
-        -- 'super-tab' for tab to accept
-        -- 'enter' for enter to accept
-        -- 'none' for no mappings
-        --
-        -- For an understanding of why the 'default' preset is recommended,
-        -- you will need to read `:help ins-completion`
-        --
-        -- No, but seriously. Please read `:help ins-completion`, it is really good!
-        --
-        -- All presets have the following mappings:
-        -- <tab>/<s-tab>: move to right/left of your snippet expansion
-        -- <c-space>: Open menu or open docs if already open
-        -- <c-n>/<c-p> or <up>/<down>: Select next/previous item
-        -- <c-e>: Hide menu
-        -- <c-k>: Toggle signature help
-        --
-        -- See :h blink-cmp-config-keymap for defining your own keymap
         preset = 'default',
-        -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
-        --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
+
+        -- Manually open completion menu
+        ['<C-l>'] = { 'show' },
+
+        -- LuaSnip navigation
         ['<C-j>'] = { 'snippet_forward', 'fallback' },
         ['<C-k>'] = { 'snippet_backward', 'fallback' },
       },
 
       appearance = {
-        -- 'mono' (default) for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
-        -- Adjusts spacing to ensure icons are aligned
         nerd_font_variant = 'mono',
       },
 
       completion = {
-        -- By default, you may press `<c-space>` to show the documentation.
-        -- Optionally, set `auto_show = true` to show the documentation after a delay.
-        menu = { auto_show = false },
-        documentation = { auto_show = false, auto_show_delay_ms = 500 },
-        trigger = { show_in_snippet = false },
-      },
+        -- Do not automatically show completion suggestions
+        menu = {
+          auto_show = false,
+        },
 
-      sources = {
-        default = { 'lsp', 'path', 'snippets', 'lazydev' },
-        providers = {
-          lazydev = { module = 'lazydev.integrations.blink', score_offset = 100 },
+        documentation = {
+          auto_show = false,
+          auto_show_delay_ms = 500,
+        },
+
+        trigger = {
+          show_in_snippet = false,
         },
       },
 
-      snippets = { preset = 'luasnip' },
+      sources = {
+        default = {
+          'lsp',
+          'path',
+          'snippets',
+          'buffer',
+          'lazydev',
+        },
 
-      -- Blink.cmp includes an optional, recommended rust fuzzy matcher,
-      -- which automatically downloads a prebuilt binary when enabled.
-      --
-      -- By default, we use the Lua implementation instead, but you may enable
-      -- the rust implementation via `'prefer_rust_with_warning'`
-      --
-      -- See :h blink-cmp-config-fuzzy for more information
-      fuzzy = { implementation = 'lua' },
+        providers = {
+          lazydev = {
+            module = 'lazydev.integrations.blink',
+            score_offset = 100,
+          },
+        },
+      },
 
-      -- Shows a signature help window while you type arguments for a function
-      signature = { enabled = true },
+      snippets = {
+        preset = 'luasnip',
+      },
+
+      fuzzy = {
+        implementation = 'lua',
+      },
+
+      signature = {
+        enabled = true,
+      },
     },
   },
 
@@ -1099,7 +1090,7 @@ require('lazy').setup({
   -- require 'kickstart.plugins.catppuccin',
   -- require 'kickstart.plugins.nvim-orgmode',
   require 'kickstart.plugins.nvim-autopairs',
-  require 'kickstart.plugins.nvim-cmp',
+  --require 'kickstart.plugins.nvim-cmp',
   --require 'kickstart.plugins.markdown-preview',
   --require 'kickstart.plugins.markdown',
   require 'kickstart.plugins.flash',

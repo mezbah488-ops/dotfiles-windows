@@ -12,7 +12,7 @@ opacity = 0.8
 option_as_alt = "Both"
 
 [font]
-normal = { family = "JetBrainsMonoNL Nerd Font Mono", style = "Light" }
+normal = { family = "JetBrainsMonoNL Nerd Font Mono", style = "Bold" }
 bold   = { family = "JetBrainsMonoNL Nerd Font Mono", style = "ExtraBold" }
 size = 12
 

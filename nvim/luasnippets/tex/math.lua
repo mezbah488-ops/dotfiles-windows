@@ -644,7 +644,7 @@ return {
   ),
   -- ANGLE BRACKETS
   s(
-    { trig = '([^%a])la', wordTrig = false, regTrig = true, snippetType = 'autosnippet' },
+    { trig = '([^%a])la;', wordTrig = false, regTrig = true, snippetType = 'autosnippet' },
     fmta('<>\\left\\langle<>\\right\\rangle', {
       f(function(_, snip)
         return snip.captures[1]

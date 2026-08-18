@@ -10,9 +10,9 @@ vim.opt_local.textwidth = 0 -- don't hard-wrap with inserted newlines
 vim.opt_local.breakindent = true -- wrapped lines keep the indent of the original
 
 -- Navigate by visual line instead of logical line, since lines are long/wrapped
-vim.keymap.set('n', 'j', 'gj', { buffer = true })
-vim.keymap.set('n', 'k', 'gk', { buffer = true })
-
+-- vim.keymap.set('n', 'j', 'gj', { buffer = true })
+-- vim.keymap.set('n', 'k', 'gk', { buffer = true })
+--
 vim.opt.fileencoding = 'utf-8'
 vim.opt.bomb = false
 
