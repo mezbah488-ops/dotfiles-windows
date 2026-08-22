@@ -944,7 +944,7 @@ require('lazy').setup({
     --- @type blink.cmp.Config
     opts = {
       keymap = {
-        preset = 'default',
+        preset = 'enter',
 
         -- Manually open completion menu
         ['<C-l>'] = { 'show' },
@@ -963,14 +963,15 @@ require('lazy').setup({
         menu = {
           auto_show = false,
         },
-
         documentation = {
-          auto_show = false,
+          auto_show = true,
           auto_show_delay_ms = 500,
         },
-
         trigger = {
           show_in_snippet = false,
+        },
+        ghost_text = {
+          enabled = true,
         },
       },
 
@@ -982,8 +983,8 @@ require('lazy').setup({
           'buffer',
           'lazydev',
         },
-
         providers = {
+          snippets = { score_offset = 50 },
           lazydev = {
             module = 'lazydev.integrations.blink',
             score_offset = 100,

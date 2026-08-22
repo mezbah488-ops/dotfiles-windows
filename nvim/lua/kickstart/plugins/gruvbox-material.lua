@@ -14,7 +14,7 @@ return {
       vim.g.gruvbox_material_transparent_background = 1
 
       -- Uncomment to activate immediately instead of Kanagawa:
-      vim.cmd.colorscheme 'minisummer'
+      vim.cmd.colorscheme 'gruvbox-material'
     end,
   },
 }
